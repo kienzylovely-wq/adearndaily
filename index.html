@@ -53,24 +53,31 @@
   </div>
 
   <script>
-    let balance = parseFloat(localStorage.getItem('tonBalance')) || 0;
+    // Ambil User ID dari Telegram WebApp (ini yang bikin balance berbeda per akun)
+    let userId = "unknown";
+    if (window.Telegram?.WebApp?.initDataUnsafe?.user?.id) {
+      userId = window.Telegram.WebApp.initDataUnsafe.user.id;
+    }
+
+    // Gunakan User ID sebagai key penyimpanan
+    const storageKey = 'tonBalance_' + userId;
+    let balance = parseFloat(localStorage.getItem(storageKey)) || 0;
+
     document.getElementById('balance').innerHTML = balance.toFixed(2) + ' <span class="ton">TON</span>';
 
     function saveBalance() {
-      localStorage.setItem('tonBalance', balance);
+      localStorage.setItem(storageKey, balance);
       document.getElementById('balance').innerHTML = balance.toFixed(2) + ' <span class="ton">TON</span>';
     }
 
-    // Cek apakah SDK sudah siap
     function checkSDK() {
       if (typeof show_10865188 === 'undefined') {
-        alert("SDK belum siap.\nTunggu 3-5 detik lalu coba klik lagi.");
+        alert("SDK masih loading...\nTunggu sebentar dan coba lagi.");
         return false;
       }
       return true;
     }
 
-    // Tombol Iklan
     function watchInterstitial() {
       if (!checkSDK()) return;
       show_10865188({
@@ -78,7 +85,7 @@
         onReward: () => {
           balance += 0.03;
           saveBalance();
-          alert('✅ +0.03 TON berhasil ditambahkan!');
+          alert('✅ +0.03 TON added successfully!');
         }
       });
     }
@@ -88,10 +95,8 @@
       show_10865188('pop').then(() => {
         balance += 0.06;
         saveBalance();
-        alert('🔥 +0.06 TON berhasil ditambahkan!');
-      }).catch(() => {
-        alert('Gagal memuat popup. Coba lagi.');
-      });
+        alert('🔥 +0.06 TON added successfully!');
+      }).catch(() => alert('Failed to load ad. Try again.'));
     }
 
     function showInAppInterstitial() {
@@ -103,36 +108,15 @@
       }
     }
 
-    // Withdraw
     function withdrawTON() {
       if (balance < 1) {
-        alert('❌ Minimum withdrawal adalah 1 TON');
+        alert('❌ Minimum withdrawal is 1 TON');
         return;
       }
-
-      const address = prompt('Masukkan TON Wallet Address kamu:');
-      if (!address || address.length < 10) {
-        alert('❌ Alamat wallet tidak valid');
-        return;
-      }
-
-      let amount = parseFloat(prompt('Masukkan jumlah TON yang ingin diwithdraw:', balance.toFixed(2)));
-      if (amount < 1 || amount > balance) {
-        alert('❌ Jumlah tidak valid');
-        return;
-      }
-
-      const fee = Math.max(amount * 0.10, 0.1);
-      const total = amount + fee;
-
-      if (confirm(`Withdraw ${amount.toFixed(2)} TON\nFee 10%: ${fee.toFixed(2)} TON\nTotal dikurangi: ${total.toFixed(2)} TON\n\nKe alamat: ${address}\n\nKonfirmasi?`)) {
-        balance -= total;
-        saveBalance();
-        alert(`✅ Permintaan withdraw berhasil dikirim!\n\nAmount: ${amount.toFixed(2)} TON\nFee: ${fee.toFixed(2)} TON`);
-      }
+      alert('💸 Withdraw feature is under development.');
     }
 
-    // Auto show in-app setelah 4 detik
+    // Auto show in-app
     setTimeout(showInAppInterstitial, 4000);
   </script>
 </body>
