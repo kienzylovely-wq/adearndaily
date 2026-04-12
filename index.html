@@ -31,18 +31,7 @@
       box-shadow: 0 8px 25px rgba(0,255,170,0.4);
     }
     .withdraw-btn { background: linear-gradient(90deg, #ffaa00, #ff8800); color: white; }
-    .info { font-size: 14px; opacity: 0.8; margin: 25px 20px; line-height: 1.5; }
-    .history {
-      margin: 30px 15px;
-      text-align: left;
-    }
-    .tx-item {
-      background: rgba(255,255,255,0.06);
-      padding: 12px 16px;
-      border-radius: 12px;
-      margin-bottom: 10px;
-      font-size: 14px;
-    }
+    .info { font-size: 14px; opacity: 0.8; margin: 30px 20px; line-height: 1.5; }
   </style>
 </head>
 <body>
@@ -59,80 +48,37 @@
   <button onclick="showInAppInterstitial()">📢 IN-APP INTERSTITIAL<br><small>Auto Show</small></button>
   <button onclick="withdrawTON()" class="withdraw-btn">💸 WITHDRAW TON</button>
 
-  <div class="history">
-    <h3>Transaction History</h3>
-    <div id="historyList">No transactions yet</div>
-  </div>
-
   <div class="info">
     Minimum withdrawal: 1 TON (Fee 10%)
   </div>
 
   <script>
     let balance = parseFloat(localStorage.getItem('tonBalance')) || 0;
-    let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-
     document.getElementById('balance').innerHTML = balance.toFixed(2) + ' <span class="ton">TON</span>';
-    renderHistory();
 
-    function saveData() {
+    function saveBalance() {
       localStorage.setItem('tonBalance', balance);
-      localStorage.setItem('transactions', JSON.stringify(transactions));
       document.getElementById('balance').innerHTML = balance.toFixed(2) + ' <span class="ton">TON</span>';
-      renderHistory();
     }
 
-    function addTransaction(type, amount, note = "") {
-      const tx = {
-        date: new Date().toLocaleString('id-ID'),
-        type: type,
-        amount: amount,
-        note: note
-      };
-      transactions.unshift(tx);
-      if (transactions.length > 15) transactions.pop();
-      saveData();
-    }
-
-    function renderHistory() {
-      const list = document.getElementById('historyList');
-      if (transactions.length === 0) {
-        list.innerHTML = '<p style="opacity:0.6; text-align:center;">No transactions yet</p>';
-        return;
-      }
-      let html = '';
-      transactions.forEach(tx => {
-        const color = tx.amount > 0 ? '#00ff88' : '#ff6666';
-        html += `
-          <div class="tx-item">
-            <div style="display:flex;justify-content:space-between;">
-              <span>${tx.type}</span>
-              <span style="color:\( {color}"> \){tx.amount > 0 ? '+' : ''}${tx.amount} TON</span>
-            </div>
-            <small style="opacity:0.7;">${tx.date}</small>
-            \( {tx.note ? `<small style="opacity:0.7;"> \){tx.note}</small>` : ''}
-          </div>`;
-      });
-      list.innerHTML = html;
-    }
-
+    // Cek apakah SDK sudah siap
     function checkSDK() {
       if (typeof show_10865188 === 'undefined') {
-        alert("Monetag SDK is still loading...\nPlease wait 3-5 seconds and try again.");
+        alert("SDK belum siap.\nTunggu 3-5 detik lalu coba klik lagi.");
         return false;
       }
       return true;
     }
 
+    // Tombol Iklan
     function watchInterstitial() {
       if (!checkSDK()) return;
       show_10865188({
         type: 'rewardedInterstitial',
         onReward: () => {
           balance += 0.03;
-          saveData();
-          addTransaction('Ad Reward', 0.03, 'Rewarded Interstitial');
-          alert('✅ +0.03 TON added successfully!');
+          saveBalance();
+          alert('✅ +0.03 TON berhasil ditambahkan!');
         }
       });
     }
@@ -141,10 +87,11 @@
       if (!checkSDK()) return;
       show_10865188('pop').then(() => {
         balance += 0.06;
-        saveData();
-        addTransaction('Ad Reward', 0.06, 'Rewarded Popup');
-        alert('🔥 +0.06 TON added successfully!');
-      }).catch(() => alert('Failed to load ad. Try again.'));
+        saveBalance();
+        alert('🔥 +0.06 TON berhasil ditambahkan!');
+      }).catch(() => {
+        alert('Gagal memuat popup. Coba lagi.');
+      });
     }
 
     function showInAppInterstitial() {
@@ -156,53 +103,36 @@
       }
     }
 
-    // Withdraw dengan fitur Paste Address
-    async function withdrawTON() {
+    // Withdraw
+    function withdrawTON() {
       if (balance < 1) {
-        alert('❌ Minimum withdrawal is 1 TON');
+        alert('❌ Minimum withdrawal adalah 1 TON');
         return;
       }
 
-      // Form Withdraw yang lebih baik
-      let address = prompt('Enter TON Wallet Address:', '');
-
-      if (!address) return;
-
-      // Fitur Paste Address
-      if (address === "") {
-        if (navigator.clipboard) {
-          try {
-            address = await navigator.clipboard.readText();
-            if (!address) address = prompt('Enter TON Wallet Address:', '');
-          } catch (e) {
-            address = prompt('Enter TON Wallet Address:', '');
-          }
-        }
-      }
-
+      const address = prompt('Masukkan TON Wallet Address kamu:');
       if (!address || address.length < 10) {
-        alert('❌ Invalid wallet address');
+        alert('❌ Alamat wallet tidak valid');
         return;
       }
 
-      let amount = parseFloat(prompt('Enter amount to withdraw (min 1 TON):', balance.toFixed(2)));
+      let amount = parseFloat(prompt('Masukkan jumlah TON yang ingin diwithdraw:', balance.toFixed(2)));
       if (amount < 1 || amount > balance) {
-        alert('❌ Invalid amount');
+        alert('❌ Jumlah tidak valid');
         return;
       }
 
       const fee = Math.max(amount * 0.10, 0.1);
       const total = amount + fee;
 
-      if (confirm(`Withdrawal Summary:\n\nAmount : ${amount.toFixed(2)} TON\nFee (10%) : ${fee.toFixed(2)} TON\nTotal deducted : ${total.toFixed(2)} TON\n\nTo : ${address}\n\nConfirm?`)) {
+      if (confirm(`Withdraw ${amount.toFixed(2)} TON\nFee 10%: ${fee.toFixed(2)} TON\nTotal dikurangi: ${total.toFixed(2)} TON\n\nKe alamat: ${address}\n\nKonfirmasi?`)) {
         balance -= total;
-        saveData();
-        addTransaction('Withdrawal', -amount, `To ${address.substring(0,8)}...`);
-        alert(`✅ Withdrawal request submitted!\n\nAmount: ${amount.toFixed(2)} TON\nFee: ${fee.toFixed(2)} TON\n\nWill be processed in 1-24 hours.`);
+        saveBalance();
+        alert(`✅ Permintaan withdraw berhasil dikirim!\n\nAmount: ${amount.toFixed(2)} TON\nFee: ${fee.toFixed(2)} TON`);
       }
     }
 
-    // Auto show in-app
+    // Auto show in-app setelah 4 detik
     setTimeout(showInAppInterstitial, 4000);
   </script>
 </body>
