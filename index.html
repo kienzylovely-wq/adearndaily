@@ -33,6 +33,15 @@
     .withdraw-btn { background: linear-gradient(90deg, #ffaa00, #ff8800); color: white; }
     .referral-btn { background: linear-gradient(90deg, #6677ff, #4466ff); color: white; }
     .info { font-size: 14px; opacity: 0.8; margin: 25px 20px; line-height: 1.5; }
+    .referral-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 24px;
+      margin: 20px auto;
+      max-width: 420px;
+      padding: 22px;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
@@ -50,13 +59,27 @@
   <button onclick="showReferral()" class="referral-btn">👥 INVITE FRIENDS (+0.20 TON)</button>
   <button onclick="withdrawTON()" class="withdraw-btn">💸 WITHDRAW TON</button>
 
+  <div class="referral-card">
+    <h2>Invite a Friend</h2>
+    <p>Share your invite link and let new users join with a bonus.<br>When someone joins using your link, they get <strong>+0.20 TON</strong>.</p>
+    
+    <p>Your referral code: <strong id="referralCodeDisplay" style="color:#00ffcc;">Loading...</strong></p>
+    <div class="invite-link" id="inviteLink" style="word-break:break-all; background:rgba(255,255,255,0.08); padding:12px; border-radius:12px; margin:12px 0;">Generating link...</div>
+    <button onclick="copyInviteLink()" style="width:auto; padding:12px 24px;">Copy Invite Link</button>
+  </div>
+
   <div class="info">
     Minimum withdrawal: 1 TON (Fee 10%)
   </div>
 
   <script>
     let balance = parseFloat(localStorage.getItem('tonBalance')) || 0;
+    let myReferralCode = localStorage.getItem('myReferralCode') || "ADEARN" + Math.floor(100000 + Math.random() * 900000);
+    localStorage.setItem('myReferralCode', myReferralCode);
+
     document.getElementById('balance').innerHTML = balance.toFixed(2) + ' <span class="ton">TON</span>';
+    document.getElementById('referralCodeDisplay').textContent = myReferralCode;
+    document.getElementById('inviteLink').textContent = `https://t.me/adearndaily?start=${myReferralCode}`;
 
     function saveBalance() {
       localStorage.setItem('tonBalance', balance);
@@ -102,10 +125,17 @@
     }
 
     function showReferral() {
-      const refCode = "ADEARN" + Math.floor(100000 + Math.random() * 900000);
-      const refLink = `https://t.me/adearndaily?start=${refCode}`;
+      const refLink = `https://t.me/adearndaily?start=${myReferralCode}`;
+      alert(`🎉 Your Referral Link\n\nCode: \( {myReferralCode}\n\nLink:\n \){refLink}\n\nShare this to your friends!\n1 successful referral = +0.20 TON`);
+    }
 
-      alert(`🎉 Your Referral Link\n\nCode: \( {refCode}\n\nLink:\n \){refLink}\n\nShare this to your friends!\n1 successful referral = +0.20 TON`);
+    function copyInviteLink() {
+      const refLink = `https://t.me/adearndaily?start=${myReferralCode}`;
+      navigator.clipboard.writeText(refLink).then(() => {
+        alert('✅ Invite link copied to clipboard!');
+      }).catch(() => {
+        prompt('Copy this link:', refLink);
+      });
     }
 
     function withdrawTON() {
@@ -136,6 +166,7 @@
       }
     }
 
+    // Auto show in-app interstitial
     setTimeout(showInAppInterstitial, 4000);
   </script>
 </body>
