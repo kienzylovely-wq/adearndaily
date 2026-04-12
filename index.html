@@ -30,15 +30,18 @@
       width: 85%;
       box-shadow: 0 8px 25px rgba(0,255,170,0.4);
     }
-    .withdraw-btn { 
-      background: linear-gradient(90deg, #ffaa00, #ff8800); 
-      color: white; 
+    .withdraw-btn { background: linear-gradient(90deg, #ffaa00, #ff8800); color: white; }
+    .info { font-size: 14px; opacity: 0.8; margin: 25px 20px; line-height: 1.5; }
+    .history {
+      margin: 30px 15px;
+      text-align: left;
     }
-    .info { 
-      font-size: 14px; 
-      opacity: 0.8; 
-      margin: 30px 20px; 
-      line-height: 1.5; 
+    .tx-item {
+      background: rgba(255,255,255,0.06);
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -56,17 +59,61 @@
   <button onclick="showInAppInterstitial()">📢 IN-APP INTERSTITIAL<br><small>Auto Show</small></button>
   <button onclick="withdrawTON()" class="withdraw-btn">💸 WITHDRAW TON</button>
 
+  <div class="history">
+    <h3>Transaction History</h3>
+    <div id="historyList">No transactions yet</div>
+  </div>
+
   <div class="info">
     Minimum withdrawal: 1 TON (Fee 10%)
   </div>
 
   <script>
     let balance = parseFloat(localStorage.getItem('tonBalance')) || 0;
-    document.getElementById('balance').innerHTML = balance.toFixed(2) + ' <span class="ton">TON</span>';
+    let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 
-    function saveBalance() {
+    document.getElementById('balance').innerHTML = balance.toFixed(2) + ' <span class="ton">TON</span>';
+    renderHistory();
+
+    function saveData() {
       localStorage.setItem('tonBalance', balance);
+      localStorage.setItem('transactions', JSON.stringify(transactions));
       document.getElementById('balance').innerHTML = balance.toFixed(2) + ' <span class="ton">TON</span>';
+      renderHistory();
+    }
+
+    function addTransaction(type, amount, note = "") {
+      const tx = {
+        date: new Date().toLocaleString('id-ID'),
+        type: type,
+        amount: amount,
+        note: note
+      };
+      transactions.unshift(tx);
+      if (transactions.length > 15) transactions.pop();
+      saveData();
+    }
+
+    function renderHistory() {
+      const list = document.getElementById('historyList');
+      if (transactions.length === 0) {
+        list.innerHTML = '<p style="opacity:0.6; text-align:center;">No transactions yet</p>';
+        return;
+      }
+      let html = '';
+      transactions.forEach(tx => {
+        const color = tx.amount > 0 ? '#00ff88' : '#ff6666';
+        html += `
+          <div class="tx-item">
+            <div style="display:flex;justify-content:space-between;">
+              <span>${tx.type}</span>
+              <span style="color:\( {color}"> \){tx.amount > 0 ? '+' : ''}${tx.amount} TON</span>
+            </div>
+            <small style="opacity:0.7;">${tx.date}</small>
+            \( {tx.note ? `<small style="opacity:0.7;"> \){tx.note}</small>` : ''}
+          </div>`;
+      });
+      list.innerHTML = html;
     }
 
     function checkSDK() {
@@ -83,7 +130,8 @@
         type: 'rewardedInterstitial',
         onReward: () => {
           balance += 0.03;
-          saveBalance();
+          saveData();
+          addTransaction('Ad Reward', 0.03, 'Rewarded Interstitial');
           alert('✅ +0.03 TON added successfully!');
         }
       });
@@ -93,7 +141,8 @@
       if (!checkSDK()) return;
       show_10865188('pop').then(() => {
         balance += 0.06;
-        saveBalance();
+        saveData();
+        addTransaction('Ad Reward', 0.06, 'Rewarded Popup');
         alert('🔥 +0.06 TON added successfully!');
       }).catch(() => alert('Failed to load ad. Try again.'));
     }
@@ -107,13 +156,30 @@
       }
     }
 
-    function withdrawTON() {
+    // Withdraw dengan fitur Paste Address
+    async function withdrawTON() {
       if (balance < 1) {
         alert('❌ Minimum withdrawal is 1 TON');
         return;
       }
 
-      const address = prompt('Enter your TON Wallet Address:');
+      // Form Withdraw yang lebih baik
+      let address = prompt('Enter TON Wallet Address:', '');
+
+      if (!address) return;
+
+      // Fitur Paste Address
+      if (address === "") {
+        if (navigator.clipboard) {
+          try {
+            address = await navigator.clipboard.readText();
+            if (!address) address = prompt('Enter TON Wallet Address:', '');
+          } catch (e) {
+            address = prompt('Enter TON Wallet Address:', '');
+          }
+        }
+      }
+
       if (!address || address.length < 10) {
         alert('❌ Invalid wallet address');
         return;
@@ -130,12 +196,13 @@
 
       if (confirm(`Withdrawal Summary:\n\nAmount : ${amount.toFixed(2)} TON\nFee (10%) : ${fee.toFixed(2)} TON\nTotal deducted : ${total.toFixed(2)} TON\n\nTo : ${address}\n\nConfirm?`)) {
         balance -= total;
-        saveBalance();
+        saveData();
+        addTransaction('Withdrawal', -amount, `To ${address.substring(0,8)}...`);
         alert(`✅ Withdrawal request submitted!\n\nAmount: ${amount.toFixed(2)} TON\nFee: ${fee.toFixed(2)} TON\n\nWill be processed in 1-24 hours.`);
       }
     }
 
-    // Auto show in-app interstitial
+    // Auto show in-app
     setTimeout(showInAppInterstitial, 4000);
   </script>
 </body>
