@@ -4,32 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>AdEarnDaily</title>
+  
+  <script src="//libtl.com/sdk.js" data-zone="10865188" data-sdk="show_10865188" async></script>
+  
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
     body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Inter', sans-serif;
+      margin: 0; padding: 0; font-family: 'Inter', sans-serif;
       background: linear-gradient(180deg, #0a0a0a, #1a0033);
-      color: white;
-      text-align: center;
-      min-height: 100vh;
+      color: white; text-align: center; min-height: 100vh;
     }
-    .header {
-      padding: 40px 15px 15px;
-    }
-    .logo {
-      font-size: 36px;
-      font-weight: 700;
-    }
-    .balance {
-      font-size: 56px;
-      font-weight: 700;
-      margin: 20px 0 8px;
-    }
-    .ton {
-      color: #00ffaa;
-    }
+    .header { padding: 40px 15px 15px; }
+    .logo { font-size: 36px; font-weight: 700; }
+    .balance { font-size: 56px; font-weight: 700; margin: 20px 0 8px; }
+    .ton { color: #00ffaa; }
     button {
       background: linear-gradient(90deg, #00ffaa, #00cc88);
       color: black;
@@ -40,115 +28,14 @@
       border-radius: 50px;
       margin: 12px 10px;
       width: 85%;
-      max-width: 360px;
       box-shadow: 0 8px 25px rgba(0,255,170,0.4);
-      cursor: pointer;
     }
-    .withdraw-btn {
-      background: linear-gradient(90deg, #ffaa00, #ff8800);
-      color: white;
-    }
-    .info {
-      font-size: 14px;
-      opacity: 0.8;
-      margin: 30px 20px;
-      line-height: 1.5;
-    }
-    .referral-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 24px;
-      margin: 20px auto;
-      max-width: 420px;
-      padding: 22px;
-      text-align: left;
-    }
-    .referral-card h2 {
-      margin: 0 0 10px;
-      font-size: 22px;
-    }
-    .referral-card p {
-      margin: 0 0 18px;
-      opacity: 0.9;
-      line-height: 1.5;
-      font-size: 15px;
-    }
-    .invite-link {
-      word-break: break-all;
-      background: rgba(255,255,255,0.08);
-      border-radius: 14px;
-      padding: 14px 16px;
-      margin-bottom: 14px;
-      font-size: 14px;
-      opacity: 0.95;
-    }
-    .referral-code {
-      display: inline-block;
-      background: rgba(0,255,170,0.15);
-      color: #00ffcc;
-      padding: 8px 12px;
-      border-radius: 14px;
-      font-size: 16px;
-      letter-spacing: 0.07em;
-      margin-top: 8px;
-    }
-    .copy-btn {
-      width: auto;
-      padding: 14px 22px;
-      border-radius: 999px;
-      margin: 0;
-    }
-    button:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-    .referral-note {
-      font-size: 13px;
-      margin-top: 14px;
-      opacity: 0.8;
-    }
-    .page-loader {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.12), rgba(0,0,0,0.95));
-      color: white;
-      z-index: 9999;
-      transition: opacity 0.45s ease, visibility 0.45s ease;
-    }
-    .page-loader.hidden {
-      opacity: 0;
-      visibility: hidden;
-    }
-    .loader-spinner {
-      width: 72px;
-      height: 72px;
-      border: 6px solid rgba(255,255,255,0.18);
-      border-top-color: #00ffaa;
-      border-radius: 50%;
-      animation: spin 1.1s linear infinite;
-      margin-bottom: 18px;
-    }
-    .loader-text {
-      margin-top: 12px;
-      font-size: 15px;
-      opacity: 0.9;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    .withdraw-btn { background: linear-gradient(90deg, #ffaa00, #ff8800); color: white; }
+    .referral-btn { background: linear-gradient(90deg, #6677ff, #4466ff); color: white; }
+    .info { font-size: 14px; opacity: 0.8; margin: 25px 20px; line-height: 1.5; }
   </style>
 </head>
 <body>
-  <div class="page-loader" id="pageLoader">
-    <div>
-      <div class="loader-spinner"></div>
-      <div class="loader-text">Loading AdEarnDaily...</div>
-    </div>
-  </div>
   <div class="header">
     <div class="logo">🪙 AdEarnDaily</div>
     <p>Watch Ads • Earn TON</p>
@@ -157,173 +44,28 @@
   <div class="balance" id="balance">0.00 <span class="ton">TON</span></div>
   <p style="margin-top:-10px; opacity:0.7;">Your Balance</p>
 
-  <button onclick="watchInterstitial()" class="ad-action" disabled>🎥 REWARDED INTERSTITIAL<br><small>+0.04 TON</small></button>
-  <button onclick="watchPopup()" class="ad-action" disabled>🔥 REWARDED POPUP<br><small>+0.08 TON</small></button>
-  <button onclick="showInAppInterstitial()" class="ad-action" disabled>📢 IN-APP INTERSTITIAL<br><small>Auto Show</small></button>
+  <button onclick="watchInterstitial()">🎥 REWARDED INTERSTITIAL<br><small>+0.03 TON</small></button>
+  <button onclick="watchPopup()">🔥 REWARDED POPUP<br><small>+0.06 TON</small></button>
+  <button onclick="showInAppInterstitial()">📢 IN-APP INTERSTITIAL<br><small>Auto Show</small></button>
+  <button onclick="showReferral()" class="referral-btn">👥 INVITE FRIENDS (+0.20 TON)</button>
   <button onclick="withdrawTON()" class="withdraw-btn">💸 WITHDRAW TON</button>
 
   <div class="info">
     Minimum withdrawal: 1 TON (Fee 10%)
   </div>
-  <div id="sdkStatus" style="font-size:13px; opacity:0.85; margin:-10px 0 18px;">Initializing ad service…</div>
-
-  <div class="referral-card">
-    <h2>Invite a Friend</h2>
-    <p>Share your invite link and let new users join with a bonus. When someone joins using your link, they get <strong>+0.20 TON</strong>.</p>
-    <p class="referral-note">Your referral code: <strong id="referralCodeDisplay" class="referral-code">...</strong></p>
-    <div class="invite-link" id="inviteLink">Generating link...</div>
-    <button class="copy-btn" onclick="copyInviteLink()">Copy Invite Link</button>
-    <p class="referral-note" id="referralNote"></p>
-  </div>
 
   <script>
-    function safeGetItem(key) {
-      try {
-        return localStorage.getItem(key);
-      } catch (e) {
-        return null;
-      }
-    }
-    function safeSetItem(key, value) {
-      try {
-        localStorage.setItem(key, value);
-      } catch (e) {
-        // ignore storage errors
-      }
-    }
-    let balance = parseFloat(safeGetItem('tonBalance')) || 0;
-    let referralCode = safeGetItem('referralCode') || generateReferralCode();
-    safeSetItem('referralCode', referralCode);
-    const currentUrl = window.location.origin + window.location.pathname;
-    const inviteUrl = currentUrl + '?ref=' + referralCode;
-    let sdkReady = false;
-    let sdkLoading = false;
-    let sdkRetryCount = 0;
-    const maxSdkRetries = 2;
-    const sdkLoadTimeoutMs = 9000;
-
-    function setSdkStatus(text, isError = false) {
-      const statusEl = document.getElementById('sdkStatus');
-      if (statusEl) {
-        statusEl.textContent = text;
-        statusEl.style.color = isError ? '#ffb347' : '#ffffff';
-      }
-    }
-
-    function enableAdButtons(enable) {
-      document.querySelectorAll('.ad-action').forEach(btn => {
-        btn.disabled = !enable;
-      });
-    }
-
-    function loadAdSdk() {
-      if (sdkLoading || sdkReady) return;
-      sdkLoading = true;
-      setSdkStatus('Loading ad service…');
-      const script = document.createElement('script');
-      script.src = '//libtl.com/sdk.js';
-      script.async = true;
-      script.dataset.zone = '10865188';
-      script.dataset.sdk = 'show_10865188';
-      script.onload = () => {
-        sdkReady = true;
-        sdkLoading = false;
-        setSdkStatus('Ad service ready');
-        enableAdButtons(true);
-        hideLoadingOverlay();
-      };
-      script.onerror = () => {
-        sdkLoading = false;
-        if (sdkRetryCount < maxSdkRetries) {
-          sdkRetryCount++;
-          setSdkStatus('Ad service failed, retrying…');
-          setTimeout(loadAdSdk, 2000);
-        } else {
-          setSdkStatus('Ad service unavailable. Try again later.', true);
-          enableAdButtons(false);
-          hideLoadingOverlay();
-        }
-      };
-      document.head.appendChild(script);
-      setTimeout(() => {
-        if (!sdkReady && sdkLoading) {
-          setSdkStatus('Still loading ad service…');
-        }
-      }, sdkLoadTimeoutMs);
-    }
-
-    function generateReferralCode() {
-      const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-      let code = '';
-      for (let i = 0; i < 6; i++) {
-        code += alphabet[Math.floor(Math.random() * alphabet.length)];
-      }
-      return code;
-    }
+    let balance = parseFloat(localStorage.getItem('tonBalance')) || 0;
+    document.getElementById('balance').innerHTML = balance.toFixed(2) + ' <span class="ton">TON</span>';
 
     function saveBalance() {
-      safeSetItem('tonBalance', balance.toFixed(6));
+      localStorage.setItem('tonBalance', balance);
       document.getElementById('balance').innerHTML = balance.toFixed(2) + ' <span class="ton">TON</span>';
     }
 
-    function updateReferralDisplay(message) {
-      document.getElementById('inviteLink').textContent = inviteUrl;
-      const codeEl = document.getElementById('referralCodeDisplay');
-      if (codeEl) {
-        codeEl.textContent = referralCode;
-      }
-      if (message) {
-        document.getElementById('referralNote').textContent = message;
-      }
-    }
-
-    function getQueryParam(name) {
-      const params = new URLSearchParams(window.location.search);
-      return params.get(name);
-    }
-
-    function handleReferral() {
-      const ref = getQueryParam('ref');
-      const used = safeGetItem('referralUsed');
-      if (!ref) {
-        updateReferralDisplay('Your referral code is ' + referralCode + '.');
-        return;
-      }
-      if (ref === referralCode) {
-        updateReferralDisplay('This is your own invite link. Share it with others to give them +0.20 TON.');
-        return;
-      }
-      if (used === 'true') {
-        updateReferralDisplay('Referral already used in this browser.');
-        return;
-      }
-      balance += 0.20;
-      saveBalance();
-      safeSetItem('referralUsed', 'true');
-      safeSetItem('referrerCode', ref);
-      updateReferralDisplay('Welcome! +0.20 TON has been added for joining with an invite link.');
-      alert('✅ Referral bonus activated! +0.20 TON has been added to your balance.');
-    }
-
-    function copyInviteLink() {
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(inviteUrl).then(() => {
-          alert('Invite link copied to clipboard!');
-        }, () => {
-          prompt('Copy this link:', inviteUrl);
-        });
-      } else {
-        prompt('Copy this link:', inviteUrl);
-      }
-    }
-
     function checkSDK() {
-      if (!sdkReady || typeof show_10865188 === 'undefined') {
-        if (sdkRetryCount >= maxSdkRetries && !sdkLoading) {
-          alert('Ad service unavailable. Please try again later.');
-          return false;
-        }
-        alert('Ad system is still loading...\nPlease wait a moment and try again.');
+      if (typeof show_10865188 === 'undefined') {
+        alert("Monetag SDK is still loading...\nPlease wait 3-5 seconds and try again.");
         return false;
       }
       return true;
@@ -334,65 +76,67 @@
       show_10865188({
         type: 'rewardedInterstitial',
         onReward: () => {
-          balance += 0.04;
+          balance += 0.03;
           saveBalance();
-          alert('✅ +0.04 TON added successfully!');
+          alert('✅ +0.03 TON added successfully!');
         }
       });
     }
 
     function watchPopup() {
       if (!checkSDK()) return;
-      show_10865188({
-        type: 'rewardedPopup',
-        onReward: () => {
-          balance += 0.08;
-          saveBalance();
-          alert('✅ +0.08 TON added successfully!');
-        }
-      });
+      show_10865188('pop').then(() => {
+        balance += 0.06;
+        saveBalance();
+        alert('🔥 +0.06 TON added successfully!');
+      }).catch(() => alert('Failed to load ad. Try again.'));
     }
 
     function showInAppInterstitial() {
-      if (!checkSDK()) return;
-      show_10865188({
-        type: 'inAppInterstitial',
-        onReward: () => {
-          balance += 0.05;
-          saveBalance();
-          alert('✅ Thank you! +0.05 TON added.');
-        }
-      });
+      if (typeof show_10865188 !== 'undefined') {
+        show_10865188({
+          type: 'inApp',
+          inAppSettings: { frequency: 2, capping: 0.1, interval: 30, timeout: 5, everyPage: false }
+        });
+      }
+    }
+
+    function showReferral() {
+      const refCode = "ADEARN" + Math.floor(100000 + Math.random() * 900000);
+      const refLink = `https://t.me/adearndaily?start=${refCode}`;
+
+      alert(`🎉 Your Referral Link\n\nCode: \( {refCode}\n\nLink:\n \){refLink}\n\nShare this to your friends!\n1 successful referral = +0.20 TON`);
     }
 
     function withdrawTON() {
       if (balance < 1) {
-        alert('You need at least 1 TON to withdraw. Keep earning more TON.');
+        alert('❌ Minimum withdrawal is 1 TON');
         return;
       }
-      const fee = balance * 0.10;
-      const payout = balance - fee;
-      balance = 0;
-      saveBalance();
-      alert('Withdrawal requested. 10% fee applied. You will receive ' + payout.toFixed(2) + ' TON.');
+
+      const address = prompt('Enter your TON Wallet Address:');
+      if (!address || address.length < 10) {
+        alert('❌ Invalid wallet address');
+        return;
+      }
+
+      let amount = parseFloat(prompt('Enter amount to withdraw (min 1 TON):', balance.toFixed(2)));
+      if (amount < 1 || amount > balance) {
+        alert('❌ Invalid amount');
+        return;
+      }
+
+      const fee = Math.max(amount * 0.10, 0.1);
+      const total = amount + fee;
+
+      if (confirm(`Withdrawal Summary:\n\nAmount : ${amount.toFixed(2)} TON\nFee (10%) : ${fee.toFixed(2)} TON\nTotal deducted : ${total.toFixed(2)} TON\n\nTo : ${address}\n\nConfirm?`)) {
+        balance -= total;
+        saveBalance();
+        alert(`✅ Withdrawal request submitted!\n\nAmount: ${amount.toFixed(2)} TON\nFee: ${fee.toFixed(2)} TON\n\nWill be processed in 1-24 hours.`);
+      }
     }
 
-    function hideLoadingOverlay() {
-      const loader = document.getElementById('pageLoader');
-      if (!loader) return;
-      loader.classList.add('hidden');
-      setTimeout(() => {
-        if (loader.parentNode) {
-          loader.parentNode.removeChild(loader);
-        }
-      }, 500);
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      saveBalance();
-      handleReferral();
-      loadAdSdk();
-    });
+    setTimeout(showInAppInterstitial, 4000);
   </script>
 </body>
 </html>
