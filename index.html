@@ -15,58 +15,102 @@
       color: white; text-align: center; min-height: 100vh;
     }
     .header { padding: 40px 15px 15px; }
-    .logo { font-size: 36px; font-weight: 700; }
-    .balance { font-size: 56px; font-weight: 700; margin: 20px 0 8px; }
+    .logo { font-size: 38px; font-weight: 700; text-shadow: 0 4px 10px rgba(0,255,170,0.3); }
+    .balance { font-size: 58px; font-weight: 700; margin: 20px 0 8px; text-shadow: 0 4px 15px rgba(0,255,170,0.4); }
     .ton { color: #00ffaa; }
-    button {
-      background: linear-gradient(90deg, #00ffaa, #00cc88);
-      color: black;
-      font-size: 17px;
-      font-weight: 700;
-      padding: 18px 30px;
-      border: none;
-      border-radius: 50px;
-      margin: 12px 10px;
-      width: 85%;
-      box-shadow: 0 8px 25px rgba(0,255,170,0.4);
+
+    .task-container { padding: 15px; }
+    .task-card {
+      background: #1f1f2e;
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5),
+                  0 4px 10px rgba(0,255,170,0.2);
+      transition: all 0.2s ease;
+      cursor: pointer;
     }
-    .withdraw-btn { background: linear-gradient(90deg, #ffaa00, #ff8800); color: white; }
-    .info { font-size: 14px; opacity: 0.8; margin: 30px 20px; line-height: 1.5; }
+    .task-card:active {
+      transform: scale(0.94);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+    }
+    .task-icon {
+      font-size: 42px;
+      filter: drop-shadow(0 6px 10px rgba(0,255,170,0.4));
+      transition: transform 0.3s ease;
+    }
+    .task-card:active .task-icon {
+      transform: scale(1.3);
+    }
+    .task-info { flex: 1; text-align: left; }
+    .task-info h3 { 
+      margin: 0; 
+      font-size: 18px; 
+    }
+    .claim-btn {
+      background: linear-gradient(90deg, #00ffaa, #00dd99);
+      color: black;
+      border: none;
+      padding: 12px 26px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 15px;
+      box-shadow: 0 6px 15px rgba(0,255,170,0.4);
+      transition: all 0.2s ease;
+    }
+    .task-card:active .claim-btn {
+      transform: scale(0.92);
+    }
+    .info { font-size: 14px; opacity: 0.8; margin: 25px 20px; line-height: 1.5; }
   </style>
 </head>
 <body>
   <div class="header">
     <div class="logo">🪙 AdEarnDaily</div>
-    <p>Watch Ads • Earn TON</p>
+    <div class="balance" id="balance">0.00 <span class="ton">TON</span></div>
   </div>
 
-  <div class="balance" id="balance">0.00 <span class="ton">TON</span></div>
-  <p style="margin-top:-10px; opacity:0.7;">Your Balance</p>
+  <div class="task-container">
+    <div class="task-card" onclick="watchInterstitial()">
+      <div class="task-icon">🎥</div>
+      <div class="task-info">
+        <h3>Watch Now Earn TON 0.03</h3>
+      </div>
+      <button class="claim-btn">Claim</button>
+    </div>
 
-  <button onclick="watchInterstitial()">🎥 REWARDED INTERSTITIAL<br><small>+0.03 TON</small></button>
-  <button onclick="watchPopup()">🔥 REWARDED POPUP<br><small>+0.06 TON</small></button>
-  <button onclick="showInAppInterstitial()">📢 IN-APP INTERSTITIAL<br><small>Auto Show</small></button>
-  <button onclick="withdrawTON()" class="withdraw-btn">💸 WITHDRAW TON</button>
+    <div class="task-card" onclick="watchPopup()">
+      <div class="task-icon">🔥</div>
+      <div class="task-info">
+        <h3>Watch Now Earn TON 0.06</h3>
+      </div>
+      <button class="claim-btn">Claim</button>
+    </div>
+
+    <div class="task-card" onclick="showInAppInterstitial()">
+      <div class="task-icon">📺</div>
+      <div class="task-info">
+        <h3>Watch Now Earn TON 0.02</h3>
+      </div>
+      <button class="claim-btn">Claim</button>
+    </div>
+  </div>
+
+  <button onclick="withdrawTON()" class="withdraw-btn" style="margin: 20px 15px; width: calc(100% - 30px);">💸 WITHDRAW TON</button>
 
   <div class="info">
     Minimum withdrawal: 1 TON (Fee 10%)
   </div>
 
   <script>
-    // Ambil User ID dari Telegram WebApp (ini yang bikin balance berbeda per akun)
-    let userId = "unknown";
-    if (window.Telegram?.WebApp?.initDataUnsafe?.user?.id) {
-      userId = window.Telegram.WebApp.initDataUnsafe.user.id;
-    }
-
-    // Gunakan User ID sebagai key penyimpanan
-    const storageKey = 'tonBalance_' + userId;
-    let balance = parseFloat(localStorage.getItem(storageKey)) || 0;
-
+    let balance = parseFloat(localStorage.getItem('tonBalance')) || 0;
     document.getElementById('balance').innerHTML = balance.toFixed(2) + ' <span class="ton">TON</span>';
 
     function saveBalance() {
-      localStorage.setItem(storageKey, balance);
+      localStorage.setItem('tonBalance', balance);
       document.getElementById('balance').innerHTML = balance.toFixed(2) + ' <span class="ton">TON</span>';
     }
 
@@ -85,7 +129,7 @@
         onReward: () => {
           balance += 0.03;
           saveBalance();
-          alert('✅ +0.03 TON added successfully!');
+          alert('✅ +0.03 TON berhasil ditambahkan!');
         }
       });
     }
@@ -95,8 +139,8 @@
       show_10865188('pop').then(() => {
         balance += 0.06;
         saveBalance();
-        alert('🔥 +0.06 TON added successfully!');
-      }).catch(() => alert('Failed to load ad. Try again.'));
+        alert('🔥 +0.06 TON berhasil ditambahkan!');
+      }).catch(() => alert('Gagal memuat iklan. Coba lagi.'));
     }
 
     function showInAppInterstitial() {
@@ -110,14 +154,11 @@
 
     function withdrawTON() {
       if (balance < 1) {
-        alert('❌ Minimum withdrawal is 1 TON');
+        alert('❌ Minimum withdrawal adalah 1 TON');
         return;
       }
-      alert('💸 Withdraw feature is under development.');
+      alert('💸 Fitur withdraw sedang dalam pengembangan.');
     }
-
-    // Auto show in-app
-    setTimeout(showInAppInterstitial, 4000);
   </script>
 </body>
 </html>
